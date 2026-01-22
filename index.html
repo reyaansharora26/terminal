@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>reyaansh arora | Hacker Terminal</title>
+<title>reyaansharora26 | Hacker Terminal</title>
 
 <style>
 body {
@@ -66,7 +66,6 @@ a:hover { text-decoration: underline; }
 
 <div id="terminal">
     <div id="boot"></div>
-
     <div id="output"></div>
 
     <div>
@@ -77,7 +76,8 @@ a:hover { text-decoration: underline; }
 </div>
 
 <script>
-const USERNAME = "reyaansh arora"; // 🔒 remembered permanently
+/* CONFIG */
+const USERNAME = "reyaansharora26";
 
 const input = document.getElementById("commandInput");
 const output = document.getElementById("output");
@@ -86,16 +86,15 @@ const boot = document.getElementById("boot");
 let history = [];
 let historyIndex = -1;
 
-/* TYPEWRITER EFFECT */
-function typeLine(text, target, speed = 40) {
+/* TYPE EFFECT */
+function typeLine(text, target, speed = 25) {
     return new Promise(resolve => {
         let i = 0;
         const p = document.createElement("p");
         target.appendChild(p);
 
         const interval = setInterval(() => {
-            p.textContent += text[i];
-            i++;
+            p.textContent += text[i++];
             if (i >= text.length) {
                 clearInterval(interval);
                 resolve();
@@ -104,12 +103,12 @@ function typeLine(text, target, speed = 40) {
     });
 }
 
-/* BOOT SEQUENCE */
+/* BOOT */
 async function bootSequence() {
-    await typeLine("> Booting secure shell...", boot);
+    await typeLine("> Initializing secure shell...", boot);
     await typeLine("> Authenticating user...", boot);
     await typeLine(`> User: ${USERNAME}`, boot);
-    await typeLine("> Access granted.", boot);
+    await typeLine("> Access: GRANTED", boot);
     await typeLine("> Type 'help' to begin", boot);
     input.focus();
 }
@@ -119,27 +118,29 @@ bootSequence();
 const commands = {
     help: `
 about
+skills
+projects
 github
 stats
-projects
-skills
 contact
 clear
 `,
 
-    about: `Developer alias: ${USERNAME}
+    about: `
+User: ${USERNAME}
 Frontend hacker.
-Dark UI. Clean code. No fluff.`,
+Dark UI. Clean code.
+`,
 
     skills: `
 HTML • CSS • JavaScript
-APIs • UI/UX • GitHub
+UI/UX • APIs • GitHub
 `,
 
     projects: `
 • Hacker Terminal Portfolio
 • Dark Dashboards
-• API-Driven Web Apps
+• Web Applications
 `,
 
     contact: `
@@ -152,15 +153,25 @@ GitHub: https://github.com/${USERNAME}
     },
 
     github: async () => {
-        const res = await fetch(`https://api.github.com/users/${USERNAME}/repos`);
-        const data = await res.json();
+        try {
+            const res = await fetch(`https://api.github.com/users/${USERNAME}/repos`);
+            if (!res.ok) throw new Error();
 
-        let html = "<p>Repositories:</p><ul>";
-        data.slice(0, 8).forEach(repo => {
-            html += `<li><a href="${repo.html_url}" target="_blank">${repo.name}</a> ⭐ ${repo.stargazers_count}</li>`;
-        });
-        html += "</ul>";
-        return html;
+            const data = await res.json();
+            let html = "<p>Repositories:</p><ul>";
+
+            data.slice(0, 8).forEach(repo => {
+                html += `<li>
+                    <a href="${repo.html_url}" target="_blank">${repo.name}</a>
+                    ⭐ ${repo.stargazers_count}
+                </li>`;
+            });
+
+            html += "</ul>";
+            return html;
+        } catch {
+            return "GitHub API limit reached or user not found.";
+        }
     },
 
     stats: async () => {
@@ -196,7 +207,7 @@ async function runCommand(cmd) {
     input.value = "";
 }
 
-/* INPUT HANDLING */
+/* INPUT */
 input.addEventListener("keydown", async e => {
     if (e.key === "Enter") {
         await runCommand(input.value.trim().toLowerCase());
@@ -216,10 +227,6 @@ input.addEventListener("keydown", async e => {
 /* ALWAYS FOCUS */
 document.addEventListener("click", () => input.focus());
 window.addEventListener("focus", () => input.focus());
-
-setInterval(() => {
-    if (document.activeElement !== input) input.focus();
-}, 400);
 </script>
 
 </body>
